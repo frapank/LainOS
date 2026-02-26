@@ -3,6 +3,7 @@
 #include "arch/pic.h"
 #include "core/boot_info.h"
 #include "core/print_vga_text.h"
+#include "core/paging.h"
 #include "core/panic.h"
 #include "core/kernel_context.h"
 #include "utils/kshell/kshell.h"
@@ -16,6 +17,7 @@ void kernel_main(u32 magic, u32 boot_info_addr)
 
     if(magic != BOOT_IDENTIFIER)
         panick("Wrong bootloader identifier");
+    paging_init();
     idt_init();
     pic_init();
     sti();
