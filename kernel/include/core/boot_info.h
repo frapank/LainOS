@@ -3,12 +3,18 @@
 
 #include "utils/types.h"
 
-struct boot_info {
-    u8 boot_mode;
-    u8 boot_flags;
+struct memory_map {
+    u64 base;
+    u64 length;
+    u32 type;
 };
 
-void boot_info_init(u32 boot_info);
-struct boot_info boot_info_get(void);
+struct boot_info {
+    u8 boot_mode;
+    u32 mem_map_entries_count;
+    struct memory_map mem_map_entries[32];
+};
+
+struct boot_info* boot_info_init(u32 boot_info);
 
 #endif
