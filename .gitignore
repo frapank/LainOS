@@ -2,6 +2,7 @@
 *.o
 *.out
 *.swap
+*.swp
 config.mk
 
 # Libs
