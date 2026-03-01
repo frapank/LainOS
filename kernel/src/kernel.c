@@ -22,7 +22,7 @@ void kernel_main(u32 magic, u32 boot_info_addr)
     pic_init();
     sti();
 
-    kshell_start();
+    kshell_start(&k_context);
 
     panick("No programs running");
 }
