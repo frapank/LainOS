@@ -6,15 +6,16 @@
 org 0x1000
 
 second_stage:
-    mov byte [BOOT_MODE], 0
+    mov dword [BOOT_MODE], 0
 
     mov si, ascii_screen
     call print_string
-
     mov si, msg_boot_options
     call print_string
 
     call select_boot_mode       ; Save in BOOT_MODE
+
+    call load_smap
     
     mov dl, [0x7E00]            ; Get the saved boot_sector
 
@@ -24,6 +25,8 @@ second_stage:
 ; ----------------------
 ; Data
 msg_disk_error          db "[-] Error while reading the disk",0Dh,0Ah,0
+msg_smem_error          db "[-] Can't get the memory map",0Dh,0Ah,0
+msg_test                db "[*] Test reached!",0Dh,0Ah,0
 msg_boot_options        db "Press a number to select an option:",0Dh,0Ah
                         db "[1] Normal mode",0Dh,0Ah
                         db "[2] Debug mode",0Dh,0Ah,0
@@ -36,24 +39,27 @@ ascii_screen            db "+----------------------------+",0Dh,0Ah
                         db "|                            |",0Dh,0Ah
                         db "+----------------------------+",0Dh,0Ah,0Dh,0Ah,0
 
+SMAP_BUFFER             db 20
+
 CODE_SEG                equ gdt_code - gdt_start   ; Offset of code segment in GDT
 DATA_SEG                equ gdt_data - gdt_start   ; Offset of data segment in GDT
 KERNEL_LOCATION         equ 0x2000                 ; Load address of kernel
-KERNEL_SECTORS          equ 17                     ; Number of sectors to read
+KERNEL_SECTORS          equ 18                     ; Number of sectors to read
 KERNEL_START_SECTOR     equ 4                      ; Start sector on disk
 
 OPTION_COUNT            equ 2
 BOOT_INFO_ADDR          equ 0x9000
 
 BOOT_MODE               equ BOOT_INFO_ADDR+0
-BOOT_MEMORY_MAP_COUNT   equ BOOT_INFO_ADDR+1
-BOOT_MAP_ENTRIES        equ BOOT_INFO_ADDR+5 ;...
+BOOT_MEMORY_MAP_COUNT   equ BOOT_INFO_ADDR+4
+BOOT_MAP_ENTRIES        equ BOOT_INFO_ADDR+8 ;...
 
 ; ----------------------
 ; Includes
 %include "boot/graphics.asm"
 %include "boot/disk.asm"
 %include "boot/io.asm"
+%include "boot/sys_info.asm"
 
 ; ----------------------
 ; Protected mode setup
