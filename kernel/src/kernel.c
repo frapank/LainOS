@@ -10,25 +10,36 @@
 
 #define BOOT_IDENTIFIER 0x1BADB002
 
-void kernel_main(u32 magic, u32 boot_info_addr)
+static u32 calculate_total_memory(struct boot_info* boot_info)
 {
-    struct kernel_context k_context;
-    k_context.kernel_boot_info = *boot_info_init(boot_info_addr);
-
-    u32 buffer = 0;
-    for(int i = 0; i != k_context.kernel_boot_info.mem_map_entries_count; i++) {
-        buffer += k_context.kernel_boot_info.mem_map_entries[i].length;
+    u32 total_mem_size = 0;
+    for(u32 i = 0; i != boot_info->mem_map_entries_count; i++) {
+        total_mem_size += boot_info->mem_map_entries[i].length;
     }
-    k_context.system_ram_kb = buffer / 1024;
+    return total_mem_size;
+}
 
+static void system_init(struct kernel_context* ctx, u32 magic)
+{
     if(magic != BOOT_IDENTIFIER)
         panick("Wrong bootloader identifier");
-    paging_init();
+
+    paging_init(ctx);
     idt_init();
     pic_init();
-    sti();
+    sti();   
+}
 
-    kshell_start(&k_context);
+void kernel_main(u32 magic, u32 boot_info_addr)
+{
+    struct kernel_context ctx;
+    ctx.kernel_boot_info = *boot_info_init(boot_info_addr);
 
+    u32 total_mem_size = calculate_total_memory(&ctx.kernel_boot_info);
+    ctx.system_ram_kb = total_mem_size / 1024;
+
+    system_init(&ctx, magic);
+
+    kshell_start(&ctx);
     panick("No programs running");
 }
