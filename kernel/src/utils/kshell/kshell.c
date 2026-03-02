@@ -28,6 +28,7 @@
 
 #include <stddef.h>
 #include "core/print_vga_text.h"
+#include "core/memory.h"
 #include "drivers/keyboard.h"
 #include "drivers/vga/vga_text.h"
 #include "utils/string.h"
