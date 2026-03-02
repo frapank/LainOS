@@ -1,6 +1,8 @@
 #ifndef PAGING_H
 #define PAGING_H
 
-void paging_init(void);
+#include "core/kernel_context.h"
+
+void paging_init(struct kernel_context* ctx);
 
 #endif

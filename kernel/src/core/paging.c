@@ -15,8 +15,7 @@ static __attribute__((aligned(4096))) u32 page_table_first[ENTRIES_NUM];
 
 static void paging_setup(void) 
 {
-    u32 current_address = 0;
-    for(int i = 0; i < ENTRIES_NUM; i++){
+    u32 current_address = 0; for(int i = 0; i < ENTRIES_NUM; i++){
         page_table_first[i] = current_address | 0x3;
         current_address += PAGE_SIZE;
     }
@@ -42,7 +41,7 @@ static void paging_enable(void)
             );
 }
 
-void paging_init(void)
+void paging_init(struct kernel_context* ctx)
 {
     paging_setup();
     paging_load_dir();
