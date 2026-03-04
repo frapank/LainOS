@@ -7,6 +7,7 @@ org 0x1000
 
 second_stage:
     mov dword [BOOT_MODE], 0
+    mov dword [BOOT_KERNEL_START], KERNEL_LOCATION
 
     mov si, ascii_screen
     call print_string
@@ -14,12 +15,10 @@ second_stage:
     call print_string
 
     call select_boot_mode       ; Save in BOOT_MODE
-
-    call load_smap
     
     mov dl, [0x7E00]            ; Get the saved boot_sector
-
     call read_disk
+    call load_smap
     call start_protected
 
 ; ----------------------
@@ -51,8 +50,10 @@ OPTION_COUNT            equ 2
 BOOT_INFO_ADDR          equ 0x9000
 
 BOOT_MODE               equ BOOT_INFO_ADDR+0
-BOOT_MEMORY_MAP_COUNT   equ BOOT_INFO_ADDR+4
-BOOT_MAP_ENTRIES        equ BOOT_INFO_ADDR+8 ;...
+BOOT_KERNEL_START       equ BOOT_INFO_ADDR+4
+BOOT_MEMORY_MAP_COUNT   equ BOOT_INFO_ADDR+8
+                        ; Padding 4 byte
+BOOT_MAP_ENTRIES        equ BOOT_INFO_ADDR+16
 
 ; ----------------------
 ; Includes

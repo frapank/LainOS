@@ -31,6 +31,7 @@ void cmd_ismem(struct kernel_context* ctx)
     struct boot_info* bi = &ctx->kernel_boot_info;
     printk("count: %u\n", bi->mem_map_entries_count);
     printk("ram: %dKb\n", ctx->system_ram_kb);
+    printk("kernel_start: %h\n", bi->kernel_start_address);
     for(u32 i = 0; i < bi->mem_map_entries_count; i++) {
         printk("base: %h | len: %u | type: %u\n",
                 (u32)bi->mem_map_entries[i].base,
