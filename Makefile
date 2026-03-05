@@ -46,7 +46,7 @@ kernel: boot $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
 
 # Utils
 run: all
-	qemu-system-x86_64 -drive file=$(BUILD_DIR)/everything.bin,format=raw -m 512M \
+	qemu-system-x86_64 -drive file=$(BUILD_DIR)/everything.bin,format=raw -m 3G \
 		-enable-kvm -boot c -serial stdio
 
 tools:
