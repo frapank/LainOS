@@ -43,7 +43,7 @@ SMAP_BUFFER             db 20
 CODE_SEG                equ gdt_code - gdt_start   ; Offset of code segment in GDT
 DATA_SEG                equ gdt_data - gdt_start   ; Offset of data segment in GDT
 KERNEL_LOCATION         equ 0x2000                 ; Load address of kernel
-KERNEL_SECTORS          equ 18                     ; Number of sectors to read
+KERNEL_SECTORS          equ 20                     ; Number of sectors to read
 KERNEL_START_SECTOR     equ 4                      ; Start sector on disk
 
 OPTION_COUNT            equ 2
