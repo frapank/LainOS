@@ -3,6 +3,6 @@
 
 #include "core/kernel_context.h"
 
-void paging_init(struct kernel_context* ctx);
+void vmm_init(struct kernel_context* ctx);
 
 #endif

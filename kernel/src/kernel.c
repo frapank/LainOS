@@ -2,11 +2,11 @@
 #include "arch/io.h"
 #include "arch/pic.h"
 #include "core/boot_info.h"
-#include "core/print_vga_text.h"
-#include "core/paging.h"
-#include "core/physical_memory_manager.h"
-#include "core/panic.h"
 #include "core/kernel_context.h"
+#include "core/panic.h"
+#include "core/physical_memory_manager.h"
+#include "core/print_vga_text.h"
+#include "core/virtual_memory_manager.h"
 #include "utils/kshell/kshell.h"
 
 #define BOOT_IDENTIFIER 0x1BADB002
@@ -38,7 +38,7 @@ static void system_init(struct kernel_context* ctx, u32 magic)
     u32 bytes_to_reserve = (KERNEL_END_ADDRESS - start_region) + bitmap_size;
     phmm_mark_region_used(start_region, bytes_to_reserve);
 
-    //paging_init(ctx);
+    //vmm_init(ctx);
 
     sti();   
 }
