@@ -3,7 +3,7 @@
 
 #include "utils/types.h"
 
-_Bool phmm_is_address_free(u32 address);
+bool phmm_is_address_free(u32 address);
 void phmm_mark_region_used(u32 init_address, u32 size);
 void phmm_mark_region_free(u32 init_address, u32 size);
 u32* phmm_alloc_blocks(u32 num);

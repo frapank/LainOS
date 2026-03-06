@@ -5,6 +5,8 @@
 #define PHMM_BLOCK_SIZE 4096
 #define PHMM_FIND_ERROR 4294967294
 
+typedef uint32_t physical_address;
+
 /*
  * bit 0 = free
  * bit 1 = used
@@ -13,7 +15,7 @@ static u32 *block_bit_map = 0;
 static u32 blocks_max = 0;
 static u32 used_blocks = 0;
 
-static inline _Bool is_block_occupied(u32 bit) 
+static inline bool is_block_occupied(u32 bit) 
 {
     return block_bit_map[bit/32] & ( 1 << (bit % 32));
 }
