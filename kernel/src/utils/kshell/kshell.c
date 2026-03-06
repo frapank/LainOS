@@ -26,7 +26,6 @@
 *  - Designed for simplicity and clarity, mainly for debugging purposes.
 */
 
-#include <stddef.h>
 #include "core/print_vga_text.h"
 #include "core/memory.h"
 #include "drivers/keyboard.h"
