@@ -37,3 +37,6 @@ A growing set of technical documents explaining the internals of the OS can be f
 | System Logs             | Not yet   | Print Driver / storage |
 | Test user space shell   | Not yet   | User Mode, ELF loader, Init |
 | Init System             | Not yet   | Filesystem, User Mode |
+
+## License
+This project is licensed under the GNU GPL v3.0 – see the LICENSE file for details.
