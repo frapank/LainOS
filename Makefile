@@ -3,8 +3,9 @@ include config.mk
 
 BUILD_DIR 		:= build
 BOOT_DIR 		:= boot
-SRC_DIR 		:= kernel/src
-INC_DIR 		:= kernel/include
+KERNEL_DIR		:= kernel
+SRC_DIR 		:= $(KERNEL_DIR)/src
+INC_DIR 		:= $(KERNEL_DIR)/include
 LINK_FILE 		:= link.ld
 
 ASM_DFLAGS 		:= -g -F dwarf
@@ -29,7 +30,7 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@echo "[$(CYAN)CC$(RESET)] $<"
 	@$(CC) $(FLAGS) $(INCLUDE_FLAGS) -c $< -o $@
 
-$(BUILD_DIR)/kernel_entry.o: $(BOOT_DIR)/kernel_entry.asm
+$(BUILD_DIR)/kernel_entry.o: $(SRC_DIR)/kernel_entry.asm
 	@echo "[$(RED)ASM$(RESET)]  $<"
 	@$(ASM) -f elf32 $(ASM_DFLAGS) $< -o $@
 
