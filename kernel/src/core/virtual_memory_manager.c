@@ -7,9 +7,10 @@
 #define TABLE_IN_DIR 1024
 #define PAGE_IN_TABLE 1024
 
-typedef uint32_t ptable_entry; typedef uint32_t pdir_entry;
-typedef uint32_t physical_address;
-typedef uint32_t virtual_address;
+typedef u32 ptable_entry; 
+typedef u32 pdir_entry;
+typedef u32 physical_address;
+typedef u32 virtual_address;
 
 enum PAGE_TABLE_FLAGS {
     PT_PRESENT          = 0x01,
@@ -45,6 +46,9 @@ struct page_table {
     ptable_entry entries[PAGE_IN_TABLE];
 };
 
+struct page_dir* current_page_dir;
+
+
 static void paging_setup(struct kernel_context* ctx)
 {
 
@@ -52,8 +56,8 @@ static void paging_setup(struct kernel_context* ctx)
 
 static inline void paging_load_dir(void)
 {
-    //u32 cr3_value = (u32)page_dir; //REWORK
-    //__asm__ volatile ("mov %0, %%cr3" : : "r"(cr3_value));
+    u32 cr3_value = (u32)current_page_dir; //REWORK
+    __asm__ volatile ("mov %0, %%cr3" : : "r"(cr3_value));
 }
 
 static void paging_enable(void)

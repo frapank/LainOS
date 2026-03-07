@@ -5,7 +5,7 @@
 #define PHMM_BLOCK_SIZE 4096
 #define PHMM_FIND_ERROR 4294967294
 
-typedef uint32_t physical_address;
+typedef u32 physical_address;
 
 /*
  * bit 0 = free
