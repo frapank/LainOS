@@ -1,19 +1,19 @@
 # Lain OS
-**Lain OS** is my very first 32-bit operating system project made in C. It’s part of my learning journey. I want to see how far I can take it.
+**LainOS** is my very first attempt at creating an operating system. This project serves as a vital part of my learning journey in systems programming. 
 
-## Previews of the OS
+The **LainOS** kernel operates in **32-bit mode** and is predominantly written in simple **C**, complemented by several sections of **Intel assembly**. 
+The **bootloader** is a custom implementation tailored specifically for LainOS, developed in assembly language. My plan is to evolve it into a more feature-rich bootloader resembling GRUB in functionality. Currently, it is designed to support only **Legacy BIOS**, offering basic booting capabilities. In the future, I aim to add support for **UEFI**.
+
 | KShell                  |
 | ------------------------|
 | ![preview4](screen.png) | 
 
-The LainOS kernel runs in **32-bit mode** and is written mainly in simple C with a few Intel assembly sections.
-The bootloader is custom and implemented in assembly, and I plan to expand it to be more GRUB-like. It currently supports only **Legacy BIOS**, but my goal is to add **UEFI** boot support in the future.
-
+## Documentation
 A growing set of technical documents explaining the internals of the OS can be found here:
 * [Documentation index](docs/index.md)
 * [How to build](docs/build.md)
 
-### Roadmap
+## Roadmap
 | Component               | Status    | Notes / Dependencies |
 | ----------------------- | --------- | -------------------- |
 | Bootloader ( Base )     | Done      | — |
