@@ -20,6 +20,9 @@ typedef _Bool bool;
 #define false 0
 #endif
 
+/* Null type */
+#define NULL ((void*)0)
+
 /* Size type */
 #if defined(__SIZE_TYPE__)
 typedef __SIZE_TYPE__ size_t;
