@@ -1,7 +1,8 @@
-#include "utils/kshell/kshell_commands.h"
 #include "core/print_vga_text.h"
-#include "utils/kshell/kshell.h"
 #include "core/memory.h"
+#include "drivers/keyboard.h"
+#include "utils/kshell/kshell.h"
+#include "utils/kshell/kshell_commands.h"
 
 static char* about_msg[] = {
     "==================================\n"

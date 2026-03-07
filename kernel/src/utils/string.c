@@ -1,6 +1,6 @@
 #include "utils/string.h"
 
-s32 kstrncmp(const u8* str1, const u8* str2, size_t n)
+s32 kstrncmp(const c8* str1, const c8* str2, size_t n)
 {
     for (size_t i = 0; i < n; i++) {
         if (str1[i] == 0 || str2[i] == 0)
@@ -11,10 +11,10 @@ s32 kstrncmp(const u8* str1, const u8* str2, size_t n)
     return 0;
 }
 
-size_t kstrncpy(u8* dest, const u8* src, size_t n)
+size_t kstrncpy(c8* dest, const c8* src, size_t n)
 {
     size_t src_len = 0;
-    const u8 *s;
+    const c8 *s;
 
     for (s = src; *s; ++s)
         ++src_len;
@@ -32,7 +32,7 @@ size_t kstrncpy(u8* dest, const u8* src, size_t n)
     return src_len;
 }
 
-size_t strlen_t(const u8* ch)
+size_t strlen_t(const c8* ch)
 {
     size_t i = 0;
     while (ch[i] != 0)
@@ -40,7 +40,7 @@ size_t strlen_t(const u8* ch)
     return i;
 }
 
-s32 kstreql(const u8* ch1, const u8* ch2)
+s32 kstreql(const c8* ch1, const c8* ch2)
 {
     size_t size = strlen_t(ch1);
 

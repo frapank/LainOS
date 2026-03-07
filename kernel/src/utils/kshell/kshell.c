@@ -68,6 +68,8 @@ static inline void check_command(char* cmd_name, struct kernel_context* ctx)
 
 static void cmd_help_local(struct kernel_context* ctx)
 {
+    (void)ctx;
+
     printk_color("Commands list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
 
     for(size_t i = 0; i < COMMAND_LIST_SIZE; i++){
@@ -85,7 +87,7 @@ static volatile int running = 0;
 void kshell_start(struct kernel_context* ctx)
 {
     clear_screenk();
-    cmd_about(&ctx); // Welcome message
+    cmd_about(ctx); // Welcome message
 
     running = 1;
 

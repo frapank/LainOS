@@ -51,7 +51,7 @@ struct page_dir* current_page_dir;
 
 static void paging_setup(struct kernel_context* ctx)
 {
-
+    (void)ctx;
 }
 
 static inline void paging_load_dir(void)
@@ -74,6 +74,7 @@ static void paging_enable(void)
 
 void vmm_init(struct kernel_context* ctx)
 {
+    (void)ctx;
     paging_setup(ctx);
     paging_load_dir();
     paging_enable();
