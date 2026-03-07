@@ -24,11 +24,11 @@ load_smap:
     cmp eax, 0x534D4150
     jne .error
 
-    add di, 24
-    inc dword [BOOT_MEMORY_MAP_COUNT]
-
     test ebx, ebx
     jz .done
+
+    add di, 24
+    inc dword [BOOT_MEMORY_MAP_COUNT]
 
     jmp .next_entry
 
