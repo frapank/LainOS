@@ -2,6 +2,7 @@
 #define TYPES_H
 
 /* Base types */
+typedef char               c8;
 typedef unsigned char      u8;
 typedef signed char        s8;
 typedef unsigned short     u16;
