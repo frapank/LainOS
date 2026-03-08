@@ -42,13 +42,15 @@ struct command {
 };
 
 static const struct command commands_list[] = {
-    { "clear", "Clear the console",         cmd_clear      },
-    { "exit",  "Exit shell",                cmd_exit       },
-    { "help",  "Print help",                cmd_help_local },
-    { "about", "Print start screen",        cmd_about      },
-    { "binfo", "All build info",            cmd_binfo      },
-    { "ismem", "Display init memory map",   cmd_ismem      },
-    { "echo",  "Print a message",           cmd_echo       },
+    { "help",  "Print help",                     cmd_help_local },
+    { "about", "Print start screen",             cmd_about      },
+    { "clear", "Clear the console",              cmd_clear      },
+    { "palloc","Allocate 4K of physical memory", cmd_phy_alloc  },
+    { "pfree", "Free 4K of physical memory",     cmd_phy_free   },
+    { "echo",  "Print a message",                cmd_echo       },
+    { "ismem", "Display init memory map",        cmd_ismem      },
+    { "binfo", "Build info",                     cmd_binfo      },
+    { "exit",  "Exit shell",                     cmd_exit       },
 };
 
 #define COMMAND_LIST_SIZE sizeof(commands_list)/sizeof(commands_list[0])
