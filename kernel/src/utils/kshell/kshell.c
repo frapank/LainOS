@@ -26,38 +26,41 @@
 *  - Designed for simplicity and clarity, mainly for debugging purposes.
 */
 
-#include <stddef.h>
 #include "core/print_vga_text.h"
+#include "core/memory.h"
 #include "drivers/keyboard.h"
 #include "drivers/vga/vga_text.h"
 #include "utils/string.h"
 #include "utils/kshell/kshell_commands.h"
 
-static void cmd_help_local(void);
+static void cmd_help_local(struct kernel_context* ctx);
 
 struct command {
     const char* identifier; 
     const char* help;
-    void (*function)();
+    void (*function)(struct kernel_context* ctx);
 };
 
 static const struct command commands_list[] = {
-    { "clear", "Clear the console",  cmd_clear      },
-    { "exit",  "Exit shell",         cmd_exit       },
-    { "help",  "Print help",         cmd_help_local },
-    { "about", "Print start screen", cmd_about      },
-    { "binfo", "All build info",     cmd_binfo      },
-    { "echo",  "Print a message",    cmd_echo       },
+    { "help",  "Print help",                     cmd_help_local },
+    { "about", "Print start screen",             cmd_about      },
+    { "clear", "Clear the console",              cmd_clear      },
+    { "palloc","Allocate 4K of physical memory", cmd_phy_alloc  },
+    { "pfree", "Free 4K of physical memory",     cmd_phy_free   },
+    { "echo",  "Print a message",                cmd_echo       },
+    { "ismem", "Display init memory map",        cmd_ismem      },
+    { "binfo", "Build info",                     cmd_binfo      },
+    { "exit",  "Exit shell",                     cmd_exit       },
 };
 
 #define COMMAND_LIST_SIZE sizeof(commands_list)/sizeof(commands_list[0])
 
-static inline void check_command(char* cmd_name)
+static inline void check_command(char* cmd_name, struct kernel_context* ctx)
 {
     for(size_t i = 0; i < COMMAND_LIST_SIZE; i++){
         struct command cmd = commands_list[i];
         if(kstreql(cmd_name, cmd.identifier)){
-            cmd.function();
+            cmd.function(ctx);
             return;
         }
     }
@@ -65,8 +68,10 @@ static inline void check_command(char* cmd_name)
     printk_color("Command %s not found \n", VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK, cmd_name);
 }
 
-static void cmd_help_local(void)
+static void cmd_help_local(struct kernel_context* ctx)
 {
+    (void)ctx;
+
     printk_color("Commands list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
 
     for(size_t i = 0; i < COMMAND_LIST_SIZE; i++){
@@ -81,10 +86,10 @@ static void cmd_help_local(void)
 
 static volatile int running = 0;
 
-void kshell_start(void) 
+void kshell_start(struct kernel_context* ctx)
 {
     clear_screenk();
-    cmd_about(); // Welcome message
+    cmd_about(ctx); // Welcome message
 
     running = 1;
 
@@ -103,7 +108,7 @@ void kshell_start(void)
                 }
                 new_linek();
                 command_buffer[index] = '\0';
-                check_command(command_buffer);
+                check_command(command_buffer, ctx);
                 index = 0;
                 kmemset(command_buffer, 0, sizeof(command_buffer));
                 break;

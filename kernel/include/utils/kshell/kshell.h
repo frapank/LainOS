@@ -1,7 +1,9 @@
 #ifndef KSHELL_H
 #define KSHELL_H
 
-void kshell_start(void);
+#include "core/kernel_context.h"
+
+void kshell_start(struct kernel_context* ctx);
 void kshell_stop(void);
 
 #endif

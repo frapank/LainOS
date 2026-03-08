@@ -18,7 +18,7 @@ GCC="$GCC_DEFAULT"
 LD="$LD_DEFAULT"
 OBJCOPY="$OBJCOPY_DEFAULT"
 
-GCC_FLAGS="-ffreestanding -m32 -O2 -fno-omit-frame-pointer -g \
+GCC_FLAGS="-nostdlib -nodefaultlibs -ffreestanding -m32 -O2 -fno-omit-frame-pointer -g \
 -fno-stack-protector -fno-builtin -fno-common -march=i686 \
 -mtune=i686 -Wall -Wextra -Wpedantic -pipe"
 

@@ -1,10 +1,20 @@
 #ifndef KSHELL_COMMANDS
 #define KSHELL_COMMANDS
 
-void cmd_clear(void);
-void cmd_exit(void);
-void cmd_binfo(void);
-void cmd_about(void);
-void cmd_echo(void);
+#include "core/kernel_context.h"
+
+/* Physical Memory Tester */
+void cmd_phy_alloc();
+void cmd_phy_free();
+
+/* General Info Commands */
+void cmd_ismem(struct kernel_context* ctx);
+void cmd_about(struct kernel_context* ctx);
+void cmd_binfo(struct kernel_context* ctx);
+
+/* Functional */
+void cmd_echo(struct kernel_context* ctx);
+void cmd_clear(struct kernel_context* ctx);
+void cmd_exit(struct kernel_context* ctx);
 
 #endif

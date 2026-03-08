@@ -109,6 +109,15 @@ void vprint_color(char *msg, enum vga_color text, enum vga_color background,
                     break;
                 }
 
+                if (msg[i + 1] == 'u') {
+                    int val = __builtin_va_arg(args, unsigned int);
+                    char ascii_buffer[21];
+                    int_to_ascii(val, ascii_buffer);
+                    printk_color(ascii_buffer, text, background);
+                    i++;
+                    break;
+                }
+
                 if (msg[i + 1] == 'h') {
                     unsigned int uval = __builtin_va_arg(args, unsigned int);
                     char hex_buffer[12];

@@ -1,6 +1,6 @@
 #include "core/format.h"
 
-void int_to_ascii(int n, char* buffer)
+void int_to_ascii(u32 n, c8* buffer)
 {
 
     char temp[10];
@@ -18,7 +18,30 @@ void int_to_ascii(int n, char* buffer)
     buffer[i] = 0;
 }
 
-void uint_to_hex(u32 n, char* buffer) {
+u32 asciihex_to_uint(c8* buffer)
+{
+    u32 result = 0;
+
+    for (int i = 0; buffer[i] != '\0'; i++) {
+        char c = buffer[i];
+
+        if (c >= '0' && c <= '9')
+            result = result * 16 + (c - '0');
+
+        else if (c >= 'A' && c <= 'F')
+            result = result * 16 + (c - 'A' + 10);
+
+        else if (c >= 'a' && c <= 'f')
+            result = result * 16 + (c - 'a' + 10);
+
+        else return 0;
+    }
+
+    return result;
+}
+
+void uint_to_hex(u32 n, c8* buffer)
+{
     buffer[0] = '0';
     buffer[1] = 'x';
 
