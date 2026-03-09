@@ -49,7 +49,7 @@ void cmd_phy_free()
         }
     }
 
-    address_buffer[9] = 0;
+    address_buffer[8] = 0;
     u32 address = asciihex_to_uint(address_buffer);
     printk("Deallocating 4Kb of memory at address: %h\n", address);
     phmm_free_blocks((u32*)address, 1);
