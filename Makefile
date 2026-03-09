@@ -1,4 +1,8 @@
 # -- Vars --
+ifeq ("$(wildcard config.mk)","")
+$(error File config.mk not found! Run ./configure to generate it)
+endif
+
 include config.mk
 
 BUILD_DIR 		:= build
@@ -21,6 +25,17 @@ GREEN       	:= \033[32m
 YELLOW      	:= \033[33m
 MAGENTA     	:= \033[35m
 CYAN        	:= \033[36m
+
+ifneq ($(TERM),dumb)
+  ifneq (, $(shell command -v tput 2>/dev/null))
+    RESET  := $(shell tput sgr0)
+    RED    := $(shell tput setaf 1)
+    GREEN  := $(shell tput setaf 2)
+    YELLOW := $(shell tput setaf 3)
+    MAGENTA:= $(shell tput setaf 5)
+    CYAN   := $(shell tput setaf 6)
+  endif
+endif
 
 # -- Compile --
 all: boot kernel
@@ -62,7 +77,7 @@ kernel: boot $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
 # Utils
 run: all
 	@$(MESS) '[$(YELLOW)QEMU$(RESET)] %s\n' 'Starting QemuVM'
-	@qemu-system-x86_64 -drive file=$(BUILD_DIR)/everything.bin,format=raw -m 3G \
+	@qemu-system-x86_64 -drive file=$(BUILD_DIR)/everything.bin,format=raw -m $(VMRAM) \
 		-enable-kvm -boot c -serial stdio
 
 tools:
