@@ -2,6 +2,7 @@
 #define boot_info_h
 
 #include "utils/types.h"
+#include "utils/safety.h"
 
 /*
  * base: physical start address
@@ -28,6 +29,7 @@ struct boot_info {
     struct memory_map mem_map_entries[12];
 } __attribute__((packed));
 
+WARN_UNUSED_RESULT 
 struct boot_info* boot_info_init(u32 boot_info);
 
 #endif
