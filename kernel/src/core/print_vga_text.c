@@ -8,6 +8,124 @@
 
 static struct line_data cursor = {0, 0};
 
+void new_linek(void);
+void clear_screenk(void);
+static void scroll_if_needed(void);
+static void vprint(char *msg, __builtin_va_list args);
+void printk(char *msg, ...) ;
+
+/* vprint() main function */
+static void vprint(char *msg, __builtin_va_list args) 
+{
+    enum vga_color text_color = DEFAULT_TEXT_COLOR;
+    enum vga_color background_color = DEFAULT_BACKGROUND_COLOR;
+
+    for (size_t i = 0; msg[i] != '\0'; i++) {
+        char ch = msg[i];
+
+        switch (ch) {
+            case '\n':
+                cursor.x = 0;
+                cursor.y++;
+                scroll_if_needed();
+                break;
+
+            case '\r':
+                vga_put_char(' ', text_color, background_color, cursor.x, cursor.y);
+                cursor.x = 0;
+                scroll_if_needed();
+                break;
+
+            case '\b':
+                if (cursor.x > 0) {
+                    cursor.x--;
+                    vga_put_char(' ', text_color, background_color, cursor.x, cursor.y);
+                }
+                break;
+
+            case '%':
+                if (msg[i + 1] == 'd') {
+                    int val = __builtin_va_arg(args, int);
+                    char ascii_buffer[21];
+                    int_to_ascii(val, ascii_buffer);
+                    printk("%t%b%s", text_color, background_color, ascii_buffer);
+                    i++;
+                    break;
+                }
+
+                if (msg[i + 1] == 'b') {
+                    enum vga_color val_color = __builtin_va_arg(args, unsigned int);
+                    background_color = val_color;
+                    i++;
+                    break;
+                }
+
+                if (msg[i + 1] == 't') {
+                    enum vga_color val_color = __builtin_va_arg(args, unsigned int);
+                    text_color = val_color;
+                    i++;
+                    break;
+                }
+
+                if (msg[i + 1] == 'u') {
+                    int val = __builtin_va_arg(args, unsigned int);
+                    char ascii_buffer[21];
+                    int_to_ascii(val, ascii_buffer);
+                    printk("%t%b%s", text_color, background_color, ascii_buffer);
+                    i++;
+                    break;
+                }
+
+                if (msg[i + 1] == 'h') {
+                    unsigned int uval = __builtin_va_arg(args, unsigned int);
+                    char hex_buffer[12];
+                    uint_to_hex(uval, hex_buffer);
+                    printk("%t%b%s", text_color, background_color, hex_buffer);
+                    i++;
+                    break;
+                }
+
+                if (msg[i + 1] == 'c') {
+                    int c = __builtin_va_arg(args, int);
+                    char cb[2];
+                    cb[0] = (char)c;
+                    cb[1] = '\0';
+                    printk("%t%b%s", text_color, background_color, cb);
+                    i++;
+                    break;
+                }
+
+                if (msg[i + 1] == 's') {
+                    char *s = __builtin_va_arg(args, char *);
+                    for (int j = 0; s[j] != '\0'; j++) {
+                        if (cursor.x >= VGA_WIDTH) {
+                            cursor.x = 0;
+                            cursor.y++;
+                            scroll_if_needed();
+                        }
+                        vga_put_char((unsigned char)s[j], text_color, background_color,
+                                     cursor.x, cursor.y);
+                        cursor.x++;
+                    }
+                    i++;
+                    break;
+                }
+
+                break;
+
+            default:
+                if (cursor.x >= VGA_WIDTH) {
+                    cursor.x = 0;
+                    cursor.y++;
+                    scroll_if_needed();
+                }
+                vga_put_char((unsigned char)ch, text_color, background_color, cursor.x,
+                             cursor.y);
+                cursor.x++;
+        }
+    }
+}
+
 /*
  * scroll_if_needed - scroll screen up if cursor exceeds VGA_HEIGHT
  *
@@ -55,119 +173,15 @@ static void scroll_if_needed(void)
  * Note: without this wrapper, the variadic list would be
  * invalid and behavior would be undefined.
  */
-void printk_color(char *msg, enum vga_color text, enum vga_color background,
-                 ...) 
-{
-    __builtin_va_list args;
-    __builtin_va_start(args, background);
-    vprint_color(msg, text, background, args);
-    __builtin_va_end(args);
-}
-
 void printk(char *msg, ...) 
 {
     __builtin_va_list args;
     __builtin_va_start(args, msg);
-    vprint_color(msg, DEFAULT_TEXT_COLOR, DEFAULT_BACKGROUND_COLOR, args);
+    vprint(msg, args);
     __builtin_va_end(args);
 }
 
-void vprint_color(char *msg, enum vga_color text, enum vga_color background,
-                  __builtin_va_list args) 
-{
-    for (size_t i = 0; msg[i] != '\0'; i++) {
-
-        char ch = msg[i];
-
-        switch (ch) {
-            case '\n':
-                cursor.x = 0;
-                cursor.y++;
-                scroll_if_needed();
-                break;
-
-            case '\r':
-                vga_put_char(' ', text, background, cursor.x, cursor.y);
-                cursor.x = 0;
-                scroll_if_needed();
-                break;
-
-            case '\b':
-                if (cursor.x > 0) {
-                    cursor.x--;
-                    vga_put_char(' ', text, background, cursor.x, cursor.y);
-                }
-                break;
-
-            case '%':
-                if (msg[i + 1] == 'd') {
-                    int val = __builtin_va_arg(args, int);
-                    char ascii_buffer[21];
-                    int_to_ascii(val, ascii_buffer);
-                    printk_color(ascii_buffer, text, background);
-                    i++;
-                    break;
-                }
-
-                if (msg[i + 1] == 'u') {
-                    int val = __builtin_va_arg(args, unsigned int);
-                    char ascii_buffer[21];
-                    int_to_ascii(val, ascii_buffer);
-                    printk_color(ascii_buffer, text, background);
-                    i++;
-                    break;
-                }
-
-                if (msg[i + 1] == 'h') {
-                    unsigned int uval = __builtin_va_arg(args, unsigned int);
-                    char hex_buffer[12];
-                    uint_to_hex(uval, hex_buffer);
-                    printk_color(hex_buffer, text, background);
-                    i++;
-                    break;
-                }
-
-                if (msg[i + 1] == 'c') {
-                    int c = __builtin_va_arg(args, int);
-                    char cb[2];
-                    cb[0] = (char)c;
-                    cb[1] = '\0';
-                    printk_color(cb, text, background);
-                    i++;
-                    break;
-                }
-
-                if (msg[i + 1] == 's') {
-                    char *s = __builtin_va_arg(args, char *);
-                    for (int j = 0; s[j] != '\0'; j++) {
-                        if (cursor.x >= VGA_WIDTH) {
-                            cursor.x = 0;
-                            cursor.y++;
-                            scroll_if_needed();
-                        }
-                        vga_put_char((unsigned char)s[j], text, background,
-                                     cursor.x, cursor.y);
-                        cursor.x++;
-                    }
-                    i++;
-                    break;
-                }
-
-                break;
-
-            default:
-                if (cursor.x >= VGA_WIDTH) {
-                    cursor.x = 0;
-                    cursor.y++;
-                    scroll_if_needed();
-                }
-                vga_put_char((unsigned char)ch, text, background, cursor.x,
-                             cursor.y);
-                cursor.x++;
-        }
-    }
-}
-
+/* Other */
 void new_linek(void)
 {
     cursor.x = 0;
