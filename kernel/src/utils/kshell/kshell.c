@@ -65,19 +65,19 @@ static inline void check_command(char* cmd_name, struct kernel_context* ctx)
         }
     }
 
-    printk_color("Command %s not found \n", VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK, cmd_name);
+    printk("%t%bCommand %s not found \n", VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK, cmd_name);
 }
 
 static void cmd_help_local(struct kernel_context* ctx)
 {
     (void)ctx;
 
-    printk_color("Commands list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+    printk("%t%bCommands list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
 
     for(size_t i = 0; i < COMMAND_LIST_SIZE; i++){
         struct command cmd = commands_list[i];
-        printk_color(" > %s: ", VGA_COLOR_YELLOW, VGA_COLOR_BLACK, cmd.identifier);
-        printk_color("%s\n", VGA_COLOR_WHITE, VGA_COLOR_BLACK, cmd.help);
+        printk("%t%b > %s: %t%b%s\n", VGA_COLOR_YELLOW, VGA_COLOR_BLACK, 
+                cmd.identifier, VGA_COLOR_WHITE, VGA_COLOR_BLACK, cmd.help);
     }
 }
 

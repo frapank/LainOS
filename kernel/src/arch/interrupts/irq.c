@@ -48,7 +48,7 @@ void __attribute__((cdecl)) i686_IRQ_Handler(struct regs* regs)
         irq -= 0x20;
     
     if (unlikely(irq >= 16)) {
-        printk_color("Unknown irq number: %d\n", VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK, irq);
+        printk("%t%bUnknown irq number: %d\n", VGA_COLOR_LIGHT_RED, VGA_COLOR_BLACK, irq);
         return;
     }
 

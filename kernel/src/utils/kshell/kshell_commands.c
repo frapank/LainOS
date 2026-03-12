@@ -90,10 +90,10 @@ void cmd_about(struct kernel_context* ctx)
 void cmd_binfo(struct kernel_context* ctx)
 {
     (void)ctx;
-    printk_color("Build info list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
-    printk_color(" > Build date: ", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
+    printk("%t%bBuild info list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
+    printk("%t%b > Build date: ", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
     printk("%s\n", __DATE__);
-    printk_color(" > Build time: ", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
+    printk("%t%b > Build time: ", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
     printk("%s\n", __TIME__);
 }
 
