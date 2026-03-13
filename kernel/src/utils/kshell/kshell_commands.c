@@ -10,14 +10,15 @@
 void cmd_phy_alloc()
 {
     phys_addr_t* block_address = phmm_alloc_blocks(1);
-    printk("Allocated 4Kb at %h\n", block_address);
+    printk("Allocated %t4Kb%t at %t%h\n", VGA_COLOR_YELLOW, VGA_COLOR_WHITE,
+            VGA_COLOR_YELLOW, block_address);
 }
 
 void cmd_phy_free()
 {
     c8 address_buffer[9] = {0};
     u32 index = 0;
-    printk("Insert address : 0x");
+    printk("Insert address : %t0x", VGA_COLOR_YELLOW);
     for (;;){
         char c = getch();
 
@@ -44,14 +45,15 @@ void cmd_phy_free()
             if (index >= 8) continue;
             if (c >= 32 && c <= 126) {
                 address_buffer[index++] = c;
-                printk("%c", c);
+                printk("%t%c", VGA_COLOR_YELLOW, c);
             }
         }
     }
 
     address_buffer[8] = 0;
     u32 address = asciihex_to_uint(address_buffer);
-    printk("Deallocating 4Kb of memory at address: %h\n", address);
+    printk("Deallocating %t4Kb%t of memory at address: %t%h\n", 
+            VGA_COLOR_YELLOW, VGA_COLOR_WHITE, VGA_COLOR_YELLOW, address);
     phmm_free_blocks((u32*)address, 1);
 }
 
@@ -90,11 +92,11 @@ void cmd_about(struct kernel_context* ctx)
 void cmd_binfo(struct kernel_context* ctx)
 {
     (void)ctx;
-    printk("%t%bBuild info list:\n", VGA_COLOR_LIGHT_BLUE, VGA_COLOR_BLACK);
-    printk("%t%b > Build date: ", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
-    printk("%s\n", __DATE__);
-    printk("%t%b > Build time: ", VGA_COLOR_LIGHT_GREEN, VGA_COLOR_BLACK);
-    printk("%s\n", __TIME__);
+    printk("%tBuild info list:\n", VGA_COLOR_YELLOW, VGA_COLOR_BLACK);
+    printk(" > Build date: %t%s\n", 
+            VGA_COLOR_LIGHT_CYAN, __DATE__);
+    printk(" > Build time: %t%s\n", 
+            VGA_COLOR_LIGHT_CYAN, __TIME__);
 }
 
 /* Functional */
