@@ -26,6 +26,7 @@
 *  - Designed for simplicity and clarity, mainly for debugging purposes.
 */
 
+#ifdef KSHELL
 #include "core/print_vga_text.h"
 #include "core/memory.h"
 #include "drivers/keyboard.h"
@@ -140,3 +141,7 @@ void kshell_stop(void)
 {
     running = 0;
 }
+#else
+void kshell_start(struct kernel_context* ctx) {(void)ctx;}
+void kshell_stop(void) {}
+#endif

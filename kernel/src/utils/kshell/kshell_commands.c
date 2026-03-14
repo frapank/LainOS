@@ -1,21 +1,25 @@
+#include "utils/kshell/kshell_commands.h"
+
+#ifdef KSHELL
 #include "core/print_vga_text.h"
 #include "core/physical_memory_manager.h"
 #include "core/memory.h"
 #include "core/format.h"
 #include "drivers/keyboard.h"
 #include "utils/kshell/kshell.h"
-#include "utils/kshell/kshell_commands.h"
 
 /* Physical Memory Tester */
-void cmd_phy_alloc()
+void cmd_phy_alloc(struct kernel_context* ctx)
 {
+    (void)ctx;
     phys_addr_t* block_address = phmm_alloc_blocks(1);
     printk("Allocated %t4Kb%t at %t%h\n", VGA_COLOR_YELLOW, VGA_COLOR_WHITE,
             VGA_COLOR_YELLOW, block_address);
 }
 
-void cmd_phy_free()
+void cmd_phy_free(struct kernel_context* ctx)
 {
+    (void)ctx;
     c8 address_buffer[9] = {0};
     u32 index = 0;
     printk("Insert address : %t0x", VGA_COLOR_YELLOW);
@@ -149,3 +153,16 @@ void cmd_exit(struct kernel_context* ctx)
     clear_screenk();
     kshell_stop();
 }
+
+#else
+void cmd_phy_alloc(struct kernel_context* ctx) {(void)ctx;}
+void cmd_phy_free(struct kernel_context* ctx) {(void)ctx;}
+
+void cmd_ismem(struct kernel_context* ctx) {(void)ctx;}
+void cmd_about(struct kernel_context* ctx) {(void)ctx;}
+void cmd_binfo(struct kernel_context* ctx) {(void)ctx;}
+
+void cmd_echo(struct kernel_context* ctx) {(void)ctx;}
+void cmd_clear(struct kernel_context* ctx) {(void)ctx;}
+void cmd_exit(struct kernel_context* ctx) {(void)ctx;}
+#endif
