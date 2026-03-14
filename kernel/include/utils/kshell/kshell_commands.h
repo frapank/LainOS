@@ -1,11 +1,11 @@
-#ifndef KSHELL_COMMANDS
-#define KSHELL_COMMANDS
+#ifndef KSHELL_COMMANDS_H
+#define KSHELL_COMMANDS_H
 
 #include "core/kernel_context.h"
 
 /* Physical Memory Tester */
-void cmd_phy_alloc();
-void cmd_phy_free();
+void cmd_phy_alloc(struct kernel_context* ctx);
+void cmd_phy_free(struct kernel_context* ctx);
 
 /* General Info Commands */
 void cmd_ismem(struct kernel_context* ctx);

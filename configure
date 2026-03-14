@@ -3,6 +3,7 @@
 ## -- var --
 MK=config.mk
 DEBUG=0
+KSHELL=1
 
 # Default tools
 ASM_DEFAULT=nasm
@@ -34,6 +35,7 @@ while (($#)); do
         --set-asm=*)      ASM="${1#--set-asm=}"; shift ;;
         --set-cat=*)      CAT="${1#--set-cat=}"; shift ;;
         --enable-debug)   DEBUG=1; shift ;;
+        --disable-kshell) KSHELL=0; shift ;;
         --help|-h)
             cat <<'EOF'
 Usage: ./configure [options]
@@ -46,6 +48,7 @@ Options:
   --set-asm=PATH       Use custom ASM assembler (nasm default)
   --set-cat=PATH       Use custom CAT tool (cat default)
   --enable-debug       Enable debug flags
+  --disable-kshell     Disable kshell
   --help, -h           Show this help message
 EOF
             exit 0
@@ -104,10 +107,20 @@ fi
 
 # Set debug flags
 if [ "$DEBUG" -eq 1 ]; then
+    echo "[+] Debug enabled"
     GCC_FLAGS="$GCC_FLAGS -g -O0 -DDEBUG"
-    echo "[+] Debug flags enabled: -g -O0 -DDEBUG"
 else
+    echo "[+] Debug enabled"
     GCC_FLAGS="$GCC_FLAGS -O2 -DNDEBUG"
+fi
+
+# Set kshell flags
+if [ "$KSHELL" -eq 1 ]; then
+    echo "[+] KShell enabled"
+    GCC_FLAGS="$GCC_FLAGS -DKSHELL"
+else
+    echo "[+] Kshell disabled"
+    GCC_FLAGS="$GCC_FLAGS -DNKSHELL"
 fi
 
 # Write VRAM and flags

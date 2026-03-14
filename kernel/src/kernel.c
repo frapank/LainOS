@@ -7,7 +7,9 @@
 #include "core/physical_memory_manager.h"
 #include "core/print_vga_text.h"
 #include "core/virtual_memory_manager.h"
+#ifdef KSHELL
 #include "utils/kshell/kshell.h"
+#endif
 
 #define BOOT_IDENTIFIER 0x1BADB002
 #define KERNEL_END_ADDRESS 0x00100000 // May change
@@ -53,6 +55,9 @@ void kernel_main(u32 magic, u32 boot_info_addr)
 
     system_init(&ctx, magic);
 
+#ifdef KSHELL
     kshell_start(&ctx);
+#endif
+
     panick("No programs running");
 }
