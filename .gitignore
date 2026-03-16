@@ -3,6 +3,7 @@
 *.out
 *.swap
 *.swp
+*.img
 config.mk
 
 # Libs
