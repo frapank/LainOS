@@ -36,7 +36,14 @@ msg_disk_error          db "[-] Can't find second stage, stopped" ,0Dh,0Ah,0
 boot_disk               db  0         ; Store boot drive number
 STAGE_LOCATION          equ 0x1000    ; Load address for second stage
 STAGE_SECTORS           equ 2         ; Number of sectors to read
-STAGE_START_SECTOR      equ 2         ; First sector of second stage
+STAGE_START_LBA         equ 2048      ; First sector of second stage
+dap:
+    db 0x10              ; packet size = 16 bytes
+    db 0                 ; reserved
+    dw STAGE_SECTORS     ; number of sectors
+    dw STAGE_LOCATION    ; offset
+    dw 0x0000            ; segment
+    dq STAGE_START_LBA   ; LBA start
 
 
 ;------------------
@@ -46,21 +53,12 @@ STAGE_START_SECTOR      equ 2         ; First sector of second stage
 ;------------------
 ; Setup Protected
 read_disk:
-    cli
-    xor ax, ax
-    mov ds, ax
-    mov es, ax
-    mov bx, STAGE_LOCATION      ; Destination address for disk read
-
-    mov ah, 0x02                ; BIOS read sectors function
-    mov al, STAGE_SECTORS       ; Number of sectors to read
-    mov ch, 0x00                ; Cylinder 0
-    mov cl, STAGE_START_SECTOR  ; Starting sector
-    mov dh, 0x00                ; Head 0
-    mov dl, [0x7E00]            ; Drive number
-    int 0x13                    ; BIOS disk interrupt
-    jc disk_error               ; Jump if carry flag set (error)
-    ret                         ; Return if successful
+    lea si, [dap] ; DS:SI -> packet 
+    mov ah, 0x42 ; extended read 
+    mov dl, [boot_disk] 
+    int 0x13 
+    jc disk_error 
+    ret
 
 disk_error:
     mov si, msg_disk_error      ; Load error messag

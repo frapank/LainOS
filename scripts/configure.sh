@@ -12,6 +12,7 @@ GCC_DEFAULT=i386-elf-gcc
 LD_DEFAULT=i386-elf-ld
 OBJCOPY_DEFAULT=i386-elf-objcopy
 VMRAM_DEFAULT=512M
+VMDISK_DEFAULT=1024
 
 # Tools (can be overridden by user)
 ASM="$ASM_DEFAULT"
@@ -20,6 +21,7 @@ GCC="$GCC_DEFAULT"
 LD="$LD_DEFAULT"
 OBJCOPY="$OBJCOPY_DEFAULT"
 VMRAM="$VMRAM_DEFAULT"
+VMDISK="$VMDISK_DEFAULT"
 
 GCC_FLAGS="-nostdlib -nodefaultlibs -ffreestanding -m32 -O2 -fno-omit-frame-pointer -g \
 -fno-stack-protector -fno-builtin -fno-common -march=i686 \
@@ -29,6 +31,7 @@ GCC_FLAGS="-nostdlib -nodefaultlibs -ffreestanding -m32 -O2 -fno-omit-frame-poin
 while (($#)); do
     case "$1" in
         --set-vmram=*)    VMRAM="${1#--set-vmram=}"; shift ;;
+        --set-vmdisk=*)   VMDISK="${1#--set-vmdisk=}"; shift ;;
         --set-gcc=*)      GCC="${1#--set-gcc=}"; shift ;;
         --set-ld=*)       LD="${1#--set-ld=}"; shift ;;
         --set-objcopy=*)  OBJCOPY="${1#--set-objcopy=}"; shift ;;
@@ -42,6 +45,7 @@ Usage: ./configure [options]
 
 Options:
   --set-vmram=M/G      Ram for test qemu vm (default 512M)
+  --set-vmdisk=<NUM>    Size of the vm in mb no suffix (default 1024)
   --set-gcc=PATH       Use custom GCC compiler (i386-elf-gcc default)
   --set-ld=PATH        Use custom LD linker (i386-elf-ld default)
   --set-objcopy=PATH   Use custom OBJCOPY tool (i386-elf-objcopy default)
@@ -125,7 +129,11 @@ fi
 
 # Write VRAM and flags
 printf "VMRAM  := %s\n" "$VMRAM" >> "$MK"
-echo "[+] QemuVM ram: $VMRAM"
+echo "[+] VM ram: $VMRAM"
+
+printf "VMDISK  := %s\n" "$VMDISK" >> "$MK"
+echo "[+] VM disk: $VMDISK"
+
 printf "FLAGS := %s\n" "$GCC_FLAGS" >> "$MK"
 
 # Clean up

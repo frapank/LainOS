@@ -1,4 +1,4 @@
-# -- Vars --
+# -=== Vars ===-
 ifeq ("$(wildcard config.mk)","")
 $(error File config.mk not found! Run ./configure to generate it)
 endif
@@ -18,6 +18,13 @@ INCLUDE_FLAGS 	:= -I$(INC_DIR)
 SRC_FILES 		:= $(shell find $(SRC_DIR) -type f -name "*.c")
 OBJ_FILES 		:= $(SRC_FILES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
+DISK_IMG		:= disk.img
+SCRIPTS_DIR		:= scripts
+MAKE_IMG_SCRIPT	:= $(SCRIPTS_DIR)/img_maker.sh
+RUN_SCRIPT		:= $(SCRIPTS_DIR)/img_run.sh
+FLASH_SCRIPT	:= $(SCRIPTS_DIR)/img_flash.sh
+
+# -=== MSG ===-
 MESS			:= printf
 RESET       	:= \033[0m
 RED         	:= \033[31m
@@ -37,10 +44,10 @@ ifneq ($(TERM),dumb)
   endif
 endif
 
-# -- Compile --
+# -=== Compile ===-
 all: boot kernel
 
-# Files
+# -=== Kernel ===-
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
 	@$(MESS) '[$(CYAN)CC$(RESET)] %s\n' "$<"
@@ -54,13 +61,6 @@ $(BUILD_DIR)/isr_asm.o: $(SRC_DIR)/arch/interrupts/isr.asm
 	@$(MESS) '[$(RED)ASM$(RESET)] %s\n' "$<"
 	@$(ASM) -f elf32 $(ASM_DFLAGS) $< -o $@
 
-# Kernel
-boot:
-	@mkdir -p $(BUILD_DIR)
-	@$(MESS) '[$(RED)ASM$(RESET)] %s\n' 'boot/boot_second.asm'
-	@$(ASM) -f bin $(BOOT_DIR)/boot.asm -o $(BUILD_DIR)/boot.bin
-	@$(ASM) -f bin $(BOOT_DIR)/boot_second.asm -o $(BUILD_DIR)/boot_second.bin
-
 kernel: boot $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
 	@$(MESS) '[$(GREEN)LD$(RESET)] %s\n' 'Linking all'
 	@$(LD) -T $(LINK_FILE) \
@@ -70,16 +70,33 @@ kernel: boot $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
 	    -o $(BUILD_DIR)/full_kernel.elf \
 	    -Map=$(BUILD_DIR)/linkmap.txt
 
-	@$(MESS) '[$(MAGENTA)BIN$(RESET)] %s\n' 'Generating everything.bin'
+	@$(MESS) '[$(MAGENTA)BIN$(RESET)] %s\n' 'Generating full_kernel.bin'
 	@$(OBJCOPY) -O binary build/full_kernel.elf build/full_kernel.bin
-	@$(CAT) build/boot.bin build/boot_second.bin build/full_kernel.bin > build/everything.bin
 
-# Utils
-run: all
-	@$(MESS) '[$(YELLOW)QEMU$(RESET)] %s\n' 'Starting QemuVM'
-	@qemu-system-x86_64 -drive file=$(BUILD_DIR)/everything.bin,format=raw -m $(VMRAM) \
-		-enable-kvm -boot c -serial stdio
+# -=== Boot ===-
+boot:
+	@mkdir -p $(BUILD_DIR)
+	@$(MESS) '[$(RED)ASM$(RESET)] %s\n' 'boot/boot_second.asm'
+	@$(ASM) -f bin $(BOOT_DIR)/boot.asm -o $(BUILD_DIR)/boot.bin
+	@$(ASM) -f bin $(BOOT_DIR)/boot_second.asm -o $(BUILD_DIR)/boot_second.bin
 
+# -=== VM ===-
+img-clean:
+	@$(MESS) '[$(RED)CLEAN$(RESET)] %s\n' 'Removing $(DISK_IMG)'
+
+img-create:
+	@$(MESS) '[$(YELLOW)IMG$(RESET)] %s\n' 'Creating $(DISK_IMG)'
+	@./$(MAKE_IMG_SCRIPT) $(DISK_IMG) $(VMDISK)
+
+img-flash:
+	@$(MESS) '[$(YELLOW)FLASH$(RESET)] %s\n' 'Flashing $(DISK_IMG)'
+	@./$(FLASH_SCRIPT) $(DISK_IMG) $(BUILD_DIR)/boot.bin $(BUILD_DIR)/boot_second.bin
+
+img-run:
+	@$(MESS) '[$(YELLOW)QEMU$(RESET)] %s\n' 'Starting VM'
+	@./$(RUN_SCRIPT) $(DISK_IMG) $(VMRAM)
+
+# -=== Utils ===-
 tools:
 	@$(MESS) '[$(GREEN)TOOL$(RESET)] %s\n' "Installing in '~/usr/local/i386elfgcc'"
 	@./tool_make.sh
@@ -88,4 +105,5 @@ clean:
 	@$(MESS) '[$(RED)CLEAN$(RESET)] %s\n' "Remove 'build/'"
 	@rm -rf $(BUILD_DIR)
 
-.PHONY: all boot kernel run tools clean
+# -=== PHONY ===-
+.PHONY: clean tools img-run img-flash img-create img-clean kernel boot all
