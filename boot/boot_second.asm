@@ -124,4 +124,4 @@ start_protected_mode:
     mov ebx, BOOT_INFO_ADDR
     jmp KERNEL_LOCATION     ; Jump to loaded kernel
 
-times 1024 - ($ - $$) db 0
+times 2048 - ($ - $$) db 0

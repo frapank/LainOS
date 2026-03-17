@@ -36,7 +36,7 @@ msg_disk_error          db "[-] Can't find second stage, stopped" ,0Dh,0Ah,0
 
 boot_disk               db  0           ; Store boot drive number
 STAGE_LOCATION          equ 0x1000      ; Load address for second stage
-STAGE_SECTORS           equ 2           ; Number of sectors to read
+STAGE_SECTORS           equ 4           ; Number of sectors to read
 STAGE_START_LBA         equ 2048        ; First sector of second stage
 dap:
     db 0x10                             ; packet size = 16 bytes
