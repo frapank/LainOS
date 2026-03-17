@@ -23,13 +23,15 @@ start:
     mov [boot_disk], dl
     mov byte [0x7E00], dl
 
-    call clear_screen
+    mov si, msg_disk_log
+    call print_string
 
     call read_disk
     call start_second
 
 ;----------------
 ; Data
+msg_disk_log            db "[*] Searching second stage...",0Dh,0Ah,0
 msg_disk_error          db "[-] Can't find second stage, stopped" ,0Dh,0Ah,0
 
 boot_disk               db  0           ; Store boot drive number
@@ -68,6 +70,5 @@ disk_error:
 start_second:
     jmp STAGE_LOCATION          ; Jump to second stage
 
-times 510-($-$$) db 0           ; Fill up to 510 bytes with zeros
-dw 0xaa55                       ; Boot signature
+times 446-($-$$) db 0           ; Fill up to 510 bytes with zeros
 
