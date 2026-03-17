@@ -61,7 +61,7 @@ $(BUILD_DIR)/isr_asm.o: $(SRC_DIR)/arch/interrupts/isr.asm
 	@$(MESS) '[$(RED)ASM$(RESET)] %s\n' "$<"
 	@$(ASM) -f elf32 $(ASM_DFLAGS) $< -o $@
 
-kernel: boot $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
+kernel: $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
 	@$(MESS) '[$(GREEN)LD$(RESET)] %s\n' 'Linking all'
 	@$(LD) -T $(LINK_FILE) \
 		$(BUILD_DIR)/kernel_entry.o \
@@ -76,9 +76,9 @@ kernel: boot $(BUILD_DIR)/kernel_entry.o $(BUILD_DIR)/isr_asm.o $(OBJ_FILES)
 # -=== Boot ===-
 boot:
 	@mkdir -p $(BUILD_DIR)
-	@$(MESS) '[$(RED)ASM$(RESET)] %s\n' 'boot/boot_second.asm'
-	@$(ASM) -f bin $(BOOT_DIR)/boot.asm -o $(BUILD_DIR)/boot.bin
-	@$(ASM) -f bin $(BOOT_DIR)/boot_second.asm -o $(BUILD_DIR)/boot_second.bin
+	@$(MESS) '[$(RED)ASM$(RESET)] %s\n' '$(BOOT_DIR)/bl_second.asm'
+	@$(ASM) -f bin $(BOOT_DIR)/bl_first.asm -o $(BUILD_DIR)/bl_first.bin
+	@$(ASM) -f bin $(BOOT_DIR)/bl_second.asm -o $(BUILD_DIR)/bl_second.bin
 
 # -=== VM ===-
 img-clean:
@@ -91,8 +91,8 @@ img-create:
 
 img-flash:
 	@$(MESS) '[$(YELLOW)FLASH$(RESET)] %s\n' 'Flashing $(DISK_IMG)'
-	./$(FLASH_SCRIPT) $(DISK_IMG) $(BUILD_DIR)/boot.bin \
-		$(BUILD_DIR)/boot_second.bin $(BUILD_DIR)/full_kernel.bin
+	./$(FLASH_SCRIPT) $(DISK_IMG) $(BUILD_DIR)/bl_first.bin \
+		$(BUILD_DIR)/bl_second.bin $(BUILD_DIR)/full_kernel.bin
 
 img-run:
 	@$(MESS) '[$(YELLOW)QEMU$(RESET)] %s\n' 'Starting VM'
