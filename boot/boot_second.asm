@@ -9,6 +9,7 @@ second_stage:
     mov dword [BOOT_MODE], 0
     mov dword [BOOT_KERNEL_START], KERNEL_LOCATION
 
+    call clear_screen
     mov si, ascii_screen
     call print_string
     mov si, msg_boot_options
