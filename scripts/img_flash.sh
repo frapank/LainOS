@@ -50,17 +50,19 @@ main() {
     [[ -f "$STAGE2" ]] || error_exit "Stage2 binary '$STAGE2' not found."
     [[ -f "$KERNEL" ]] || error_exit "Kernel binary '$KERNEL' not found."
 
+
+    dd if="$STAGE1" of="$IMAGE"     bs=446 count=1   conv=notrunc status=none
+    dd if="$STAGE2" of="$IMAGE"     bs=512 seek=2048 conv=notrunc status=none
+
     LOOPDEV=$(losetup -fP --show "$IMAGE")
-    log "Using loop device: $LOOPDEV"
 
-    dd if="$STAGE1" of="$LOOPDEV"     bs=446 count=1 conv=notrunc status=none
-    dd if="$STAGE2" of="${LOOPDEV}p1" bs=512 count=2 conv=notrunc status=none
-
-    mkdir -p tmp/
+    rm -rf tmp/
+    mkdir tmp/
     mount "${LOOPDEV}p2" tmp/
     mkdir -p tmp/boot
     cp "$KERNEL" tmp/boot/lain_kernel.bin
     umount tmp/
+    rm -rf tmp/
 
     losetup -d "$LOOPDEV"
 }
