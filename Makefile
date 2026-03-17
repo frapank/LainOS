@@ -81,7 +81,7 @@ boot:
 	@$(ASM) -f bin $(BOOT_DIR)/boot_second.asm -o $(BUILD_DIR)/boot_second.bin
 
 # -=== VM ===-
-img-clear:
+img-clean:
 	@$(MESS) '[$(RED)CLEAN$(RESET)] %s\n' 'Removing $(DISK_IMG)'
 	@rm -f $(DISK_IMG)
 
@@ -91,7 +91,8 @@ img-create:
 
 img-flash:
 	@$(MESS) '[$(YELLOW)FLASH$(RESET)] %s\n' 'Flashing $(DISK_IMG)'
-	@./$(FLASH_SCRIPT) $(DISK_IMG) $(BUILD_DIR)/boot.bin $(BUILD_DIR)/boot_second.bin
+	./$(FLASH_SCRIPT) $(DISK_IMG) $(BUILD_DIR)/boot.bin \
+		$(BUILD_DIR)/boot_second.bin $(BUILD_DIR)/full_kernel.bin
 
 img-run:
 	@$(MESS) '[$(YELLOW)QEMU$(RESET)] %s\n' 'Starting VM'

@@ -36,23 +36,31 @@ main() {
     check_sudo
     check_tools
 
-    if [[ $# -ne 3 ]]; then
+    if [[ $# -ne 4 ]]; then
         usage
     fi
 
     IMAGE="$1"
     STAGE1="$2"
     STAGE2="$3"
+    KERNEL="$4"
 
     [[ -f "$IMAGE"  ]] || error_exit "Disk image '$IMAGE' not found."
     [[ -f "$STAGE1" ]] || error_exit "Stage1 binary '$STAGE1' not found."
     [[ -f "$STAGE2" ]] || error_exit "Stage2 binary '$STAGE2' not found."
+    [[ -f "$KERNEL" ]] || error_exit "Kernel binary '$KERNEL' not found."
 
     LOOPDEV=$(losetup -fP --show "$IMAGE")
     log "Using loop device: $LOOPDEV"
 
     dd if="$STAGE1" of="$LOOPDEV"     bs=446 count=1 conv=notrunc status=none
     dd if="$STAGE2" of="${LOOPDEV}p1" bs=512 count=2 conv=notrunc status=none
+
+    mkdir -p tmp/
+    mount "${LOOPDEV}p2" tmp/
+    mkdir -p tmp/boot
+    cp "$KERNEL" tmp/boot/lain_kernel.bin
+    umount tmp/
 
     losetup -d "$LOOPDEV"
 }
