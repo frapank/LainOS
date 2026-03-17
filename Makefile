@@ -81,8 +81,9 @@ boot:
 	@$(ASM) -f bin $(BOOT_DIR)/boot_second.asm -o $(BUILD_DIR)/boot_second.bin
 
 # -=== VM ===-
-img-clean:
+img-clear:
 	@$(MESS) '[$(RED)CLEAN$(RESET)] %s\n' 'Removing $(DISK_IMG)'
+	@rm -f $(DISK_IMG)
 
 img-create:
 	@$(MESS) '[$(YELLOW)IMG$(RESET)] %s\n' 'Creating $(DISK_IMG)'
