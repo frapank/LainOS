@@ -1,4 +1,3 @@
-; ----------------------
 ; Select boot mode
 select_boot_mode:
     .redo:

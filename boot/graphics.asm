@@ -1,7 +1,3 @@
-; ----------------------
-; |     Graphics       |
-; ----------------------
-
 print_string:
     mov ah, 0x0e            ; BIOS display function
     .print_loop:

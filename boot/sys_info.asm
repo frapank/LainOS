@@ -1,9 +1,4 @@
-; ----------------------
-; |      Sys Info      |
-; ----------------------
-
-; -----------------
-; laod memory map 
+; Laod memory map 
 load_smap:
     push bp
     mov bp, sp
